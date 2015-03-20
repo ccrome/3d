@@ -1,0 +1,131 @@
+Index: Program/Cura/gui/sceneView.py
+===================================================================
+--- Program.orig/Cura/gui/sceneView.py
++++ Program/Cura/gui/sceneView.py
+@@ -1090,44 +1090,66 @@ void main(void)
+ 							self.QueueRefresh()
+ 							break
+ 					#['WALL-OUTER', 'WALL-INNER', 'FILL', 'SUPPORT', 'SKIRT']
+-					if n == drawUpTill - 1:
+-						if len(self._gcodeVBOs[n]) < 9:
+-							self._gcodeVBOs[n] += self._generateGCodeVBOs2(self._gcode.layerList[n])
+-						glColor3f(c, 0, 0)
+-						self._gcodeVBOs[n][8].render(GL_QUADS)
+-						glColor3f(c/2, 0, c)
+-						self._gcodeVBOs[n][9].render(GL_QUADS)
+-						glColor3f(0, c, c/2)
+-						self._gcodeVBOs[n][10].render(GL_QUADS)
+-						glColor3f(c, 0, 0)
+-						self._gcodeVBOs[n][11].render(GL_QUADS)
++                                        alternate_view = True #profile.getPreference('alternate_gcode_view')
++					if (n == drawUpTill - 1):
++                                                if (alternate_view):
++                                                        glColor3f(c, 0, 0)
++                                                        self._gcodeVBOs[n][0].render(GL_LINES)
++                                                        glColor3f(c/2, 0, c)
++                                                        self._gcodeVBOs[n][1].render(GL_LINES)
++                                                        glColor3f(0, c, c/2)
++                                                        self._gcodeVBOs[n][2].render(GL_LINES)
++                                                        glColor3f(c, 0, 0)
++                                                        self._gcodeVBOs[n][3].render(GL_LINES)
+ 
+-						glColor3f(0, c, 0)
+-						self._gcodeVBOs[n][12].render(GL_QUADS)
+-						glColor3f(c/2, c/2, 0.0)
+-						self._gcodeVBOs[n][13].render(GL_QUADS)
+-						glColor3f(0, c, c)
+-						self._gcodeVBOs[n][14].render(GL_QUADS)
+-						self._gcodeVBOs[n][15].render(GL_QUADS)
+-						glColor3f(0, 0, c)
+-						self._gcodeVBOs[n][16].render(GL_LINES)
++                                                        glColor3f(0, c, 0)
++                                                        self._gcodeVBOs[n][4].render(GL_LINES)
++                                                        glColor3f(c/2, c/2, 0.0)
++                                                        self._gcodeVBOs[n][5].render(GL_LINES)
++                                                        glColor3f(0, c, c)
++                                                        self._gcodeVBOs[n][6].render(GL_LINES)
++                                                        self._gcodeVBOs[n][7].render(GL_LINES)
++                                                else:
++                                                        if len(self._gcodeVBOs[n]) < 9:
++                                                                self._gcodeVBOs[n] += self._generateGCodeVBOs2(self._gcode.layerList[n])
++                                                                glColor3f(c, 0, 0)
++                                                                self._gcodeVBOs[n][8].render(GL_LINES)
++                                                                glColor3f(c/2, 0, c)
++                                                                self._gcodeVBOs[n][9].render(GL_LINES)
++                                                                glColor3f(0, c, c/2)
++                                                                self._gcodeVBOs[n][10].render(GL_LINES)
++                                                                glColor3f(c, 0, 0)
++                                                                self._gcodeVBOs[n][11].render(GL_LINES)
++
++                                                        glColor3f(0, c, 0)
++                                                        self._gcodeVBOs[n][12].render(GL_LINES)
++                                                        glColor3f(c/2, c/2, 0.0)
++                                                        self._gcodeVBOs[n][13].render(GL_LINES)
++                                                        glColor3f(0, c, c)
++                                                        self._gcodeVBOs[n][14].render(GL_LINES)
++                                                        self._gcodeVBOs[n][15].render(GL_LINES)
++                                                        glColor3f(0, 0, c)
++                                                        self._gcodeVBOs[n][16].render(GL_LINES)
+ 					else:
+-						glColor3f(c, 0, 0)
+-						self._gcodeVBOs[n][0].render(GL_LINES)
+-						glColor3f(c/2, 0, c)
+-						self._gcodeVBOs[n][1].render(GL_LINES)
+-						glColor3f(0, c, c/2)
+-						self._gcodeVBOs[n][2].render(GL_LINES)
+-						glColor3f(c, 0, 0)
+-						self._gcodeVBOs[n][3].render(GL_LINES)
++                                                if (alternate_view):
++                                                        pass
++                                                else:
++                                                        glColor3f(c, 0, 0)
++                                                        self._gcodeVBOs[n][0].render(GL_LINES)
++                                                        glColor3f(c/2, 0, c)
++                                                        self._gcodeVBOs[n][1].render(GL_LINES)
++                                                        glColor3f(0, c, c/2)
++                                                        self._gcodeVBOs[n][2].render(GL_LINES)
++                                                        glColor3f(c, 0, 0)
++                                                        self._gcodeVBOs[n][3].render(GL_LINES)
+ 
+-						glColor3f(0, c, 0)
+-						self._gcodeVBOs[n][4].render(GL_LINES)
+-						glColor3f(c/2, c/2, 0.0)
+-						self._gcodeVBOs[n][5].render(GL_LINES)
+-						glColor3f(0, c, c)
+-						self._gcodeVBOs[n][6].render(GL_LINES)
+-						self._gcodeVBOs[n][7].render(GL_LINES)
++                                                        glColor3f(0, c, 0)
++                                                        self._gcodeVBOs[n][4].render(GL_LINES)
++                                                        glColor3f(c/2, c/2, 0.0)
++                                                        self._gcodeVBOs[n][5].render(GL_LINES)
++                                                        glColor3f(0, c, c)
++                                                        self._gcodeVBOs[n][6].render(GL_LINES)
++                                                        self._gcodeVBOs[n][7].render(GL_LINES)
+ 				glPopMatrix()
+ 		else:
+ 			glStencilFunc(GL_ALWAYS, 1, 1)
+Index: Program/Cura/gui/preferencesDialog.py
+===================================================================
+--- Program.orig/Cura/gui/preferencesDialog.py
++++ Program/Cura/gui/preferencesDialog.py
+@@ -45,6 +45,7 @@ class preferencesDialog(wx.Dialog):
+ 		configBase.SettingRow(right, 'auto_detect_sd')
+ 		configBase.SettingRow(right, 'check_for_updates')
+ 		configBase.SettingRow(right, 'submit_slice_information')
++#                configBase.Settingrow(right, 'alternate_gcode_view')
+ 
+ 		self.okButton = wx.Button(right, -1, 'Ok')
+ 		right.GetSizer().Add(self.okButton, (right.GetSizer().GetRows(), 0), flag=wx.BOTTOM, border=5)
+Index: Program/Cura/util/profile.py
+===================================================================
+--- Program.orig/Cura/util/profile.py
++++ Program/Cura/util/profile.py
+@@ -335,6 +335,8 @@ setting('save_profile', 'False', bool, '
+ setting('filament_cost_kg', '0', float, 'preference', 'hidden').setLabel(_("Cost (price/kg)"), _("Cost of your filament per kg, to estimate the cost of the final print."))
+ setting('filament_cost_meter', '0', float, 'preference', 'hidden').setLabel(_("Cost (price/m)"), _("Cost of your filament per meter, to estimate the cost of the final print."))
+ setting('auto_detect_sd', 'True', bool, 'preference', 'hidden').setLabel(_("Auto detect SD card drive"), _("Auto detect the SD card. You can disable this because on some systems external hard-drives or USB sticks are detected as SD card."))
++
++setting('alternate_gcode_view', 'True', bool, 'preference', 'hidden').setLabel(_("Alternate Gcode view mode"), _("Gcode view mode that displays only the current layer, rather than all layers."))
+ setting('check_for_updates', 'True', bool, 'preference', 'hidden').setLabel(_("Check for updates"), _("Check for newer versions of Cura on startup"))
+ setting('submit_slice_information', 'False', bool, 'preference', 'hidden').setLabel(_("Send usage statistics"), _("Submit anonymous usage information to improve next versions of Cura"))
+ setting('youmagine_token', '', str, 'preference', 'hidden')

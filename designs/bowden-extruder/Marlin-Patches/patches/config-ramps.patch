@@ -1,0 +1,26 @@
+Index: Marlin/Configuration.h
+===================================================================
+--- Marlin.orig/Configuration.h
++++ Marlin/Configuration.h
+@@ -82,7 +82,7 @@
+ // 999 = Leapfrog
+ 
+ #ifndef MOTHERBOARD
+-#define MOTHERBOARD 7
++#define MOTHERBOARD 33
+ #endif
+ 
+ // Define this to set a custom name for your generic Mendel,
+@@ -167,9 +167,9 @@
+ // When temperature exceeds max temp, your heater will be switched off.
+ // This feature exists to protect your hotend from overheating accidentally, but *NOT* from thermistor short/failure!
+ // You should use MINTEMP for thermistor short/failure protection.
+-#define HEATER_0_MAXTEMP 275
+-#define HEATER_1_MAXTEMP 275
+-#define HEATER_2_MAXTEMP 275
++#define HEATER_0_MAXTEMP 600
++#define HEATER_1_MAXTEMP 600
++#define HEATER_2_MAXTEMP 600
+ #define BED_MAXTEMP 150
+ 
+ // If your bed has low resistance e.g. .6 ohm and throws the fuse you can duty cycle it to reduce the

@@ -1,0 +1,13 @@
+Webcam holder for 2014 Type A Series 1 machines.
+
+   armMount:   	   	      This bit snaps on to your machine and provides a nice arm to hang things from 
+   camHolder:  		      This works for Steve's webcam.  Not for mine.
+   camera-holder-arm.stl/ipt: This works nicely for my camera.
+
+Steven Presser's files are under the license in the 'LICENSE' file.  These files are: 
+    armMount.scad
+    armMount.stl
+    camHolder.scad
+    camHolder.stl
+
+The other files are copyright Caleb Crome, and are in the public domain.

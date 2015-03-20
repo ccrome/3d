@@ -1,0 +1,138 @@
+Index: octoprint-type-a/octoprint/printer.py
+===================================================================
+--- octoprint-type-a.orig/octoprint/printer.py	2013-12-22 19:01:45.623887880 +0000
++++ octoprint-type-a/octoprint/printer.py	2013-12-22 19:45:00.614122565 +0000
+@@ -88,7 +88,7 @@
+ 		)
+ 		self._stateMonitor.reset(
+ 			state={"state": None, "stateString": self.getStateString(), "flags": self._getStateFlags()},
+-			jobData={"filename": None, "filesize": None, "estimatedPrintTime": None, "filament": None},
++			jobData={"filename": None, "filesize": None, "estimatedPrintTime": None, "maxZ" : None, "filament": None},
+ 			progress={"progress": None, "filepos": None, "printTime": None, "printTimeLeft": None},
+ 			currentZ=None
+ 		)
+@@ -303,6 +303,7 @@
+ 		formattedFilename = None
+ 		formattedFilesize = None
+ 		estimatedPrintTime = None
++		maxZ = None
+ 		fileMTime = None
+ 		filament = None
+ 		if filename:
+@@ -318,12 +319,14 @@
+ 
+ 			fileData = self._gcodeManager.getFileData(filename)
+ 			if fileData is not None and "gcodeAnalysis" in fileData.keys():
+-				if "estimatedPrintTime" in fileData["gcodeAnalysis"].keys():
++				if "estimatedPrintTime"   in fileData["gcodeAnalysis"].keys():
+ 					estimatedPrintTime = fileData["gcodeAnalysis"]["estimatedPrintTime"]
+-				if "filament" in fileData["gcodeAnalysis"].keys():
+-					filament = fileData["gcodeAnalysis"]["filament"]
++				if "maxZ"                 in fileData["gcodeAnalysis"].keys():
++					maxZ               = fileData["gcodeAnalysis"]["maxZ"]
++				if "filament"             in fileData["gcodeAnalysis"].keys():
++					filament           = fileData["gcodeAnalysis"]["filament"]
+ 
+-		self._stateMonitor.setJobData({"filename": formattedFilename, "filesize": formattedFilesize, "estimatedPrintTime": estimatedPrintTime, "filament": filament, "sd": sd, "mtime": fileMTime})
++		self._stateMonitor.setJobData({"filename": formattedFilename, "filesize": formattedFilesize, "estimatedPrintTime": estimatedPrintTime, "filament": filament, 'maxZ' : maxZ, "sd": sd, "mtime": fileMTime})
+ 
+ 	def _sendInitialStateUpdate(self, callback):
+ 		try:
+Index: octoprint-type-a/octoprint/static/js/app/viewmodels/gcodefiles.js
+===================================================================
+--- octoprint-type-a.orig/octoprint/static/js/app/viewmodels/gcodefiles.js	2013-12-22 19:01:45.696153505 +0000
++++ octoprint-type-a/octoprint/static/js/app/viewmodels/gcodefiles.js	2013-12-22 19:22:12.151231777 +0000
+@@ -171,7 +171,8 @@
+         if (data["gcodeAnalysis"]) {
+             output += "<p>";
+             output += "<strong>Filament:</strong> " + data["gcodeAnalysis"]["filament"] + "<br>";
+-            output += "<strong>Estimated Print Time:</strong> " + data["gcodeAnalysis"]["estimatedPrintTime"];
++            output += "<strong>Estimated Print Time:</strong> " + data["gcodeAnalysis"]["estimatedPrintTime"] + "<br>";
++	    output += "<strong>Max Height:</strong> " + data["gcodeAnalysis"]["maxZ"];
+             output += "</p>";
+         }
+         if (data["prints"] && data["prints"]["last"]) {
+Index: octoprint-type-a/octoprint/static/js/app/viewmodels/printerstate.js
+===================================================================
+--- octoprint-type-a.orig/octoprint/static/js/app/viewmodels/printerstate.js	2013-12-22 19:01:45.811387880 +0000
++++ octoprint-type-a/octoprint/static/js/app/viewmodels/printerstate.js	2013-12-22 19:01:48.506700381 +0000
+@@ -23,6 +23,7 @@
+ 
+     self.filament = ko.observable(undefined);
+     self.estimatedPrintTime = ko.observable(undefined);
++    self.maxZ = ko.observable(undefined);
+ 
+     self.currentHeight = ko.observable(undefined);
+ 
+@@ -80,6 +81,7 @@
+         self.filesize(data.filesize);
+         self.estimatedPrintTime(data.estimatedPrintTime);
+         self.filament(data.filament);
++	self.maxZ(data.maxZ);
+         self.sd(data.sd);
+     }
+ 
+Index: octoprint-type-a/octoprint/templates/index.jinja2
+===================================================================
+--- octoprint-type-a.orig/octoprint/templates/index.jinja2	2013-12-22 19:01:45.409044130 +0000
++++ octoprint-type-a/octoprint/templates/index.jinja2	2013-12-22 19:01:48.510606631 +0000
+@@ -116,7 +116,7 @@
+                                 File: <strong data-bind="text: filename"></strong>&nbsp;<strong data-bind="visible: sd">(SD)</strong><br>
+                                 Filament: <strong data-bind="text: filament"></strong><br>
+                                 Estimated Print Time: <strong data-bind="text: estimatedPrintTime"></strong><br>
+-                                Height: <strong data-bind="text: heightString"></strong><br>
++                                Height: <strong data-bind="text: heightString"></strong> of <strong data-bind="text: maxZ"></strong><br>
+                                 Print Time: <strong data-bind="text: printTime"></strong><br>
+                                 Print Time Left: <strong data-bind="text: printTimeLeft"></strong><br>
+                                 Printed: <strong data-bind="text: byteString"></strong><br>
+Index: octoprint-type-a/octoprint/util/gcodeInterpreter.py
+===================================================================
+--- octoprint-type-a.orig/octoprint/util/gcodeInterpreter.py	2013-12-22 19:01:45.489122255 +0000
++++ octoprint-type-a/octoprint/util/gcodeInterpreter.py	2013-12-22 19:14:17.578966095 +0000
+@@ -38,6 +38,7 @@
+ 		self.progressCallback = None
+ 		self._abort = False
+ 		self._filamentDiameter = 0
++		self.maxZ = 0
+ 	
+ 	def load(self, filename):
+ 		if os.path.isfile(filename):
+@@ -57,6 +58,7 @@
+ 		filePos = 0
+ 		pos = [0.0, 0.0, 0.0]
+ 		posOffset = [0.0, 0.0, 0.0]
++		maxZ = 0
+ 		currentE = 0.0
+ 		totalExtrusion = 0.0
+ 		maxExtrusion = 0.0
+@@ -128,6 +130,8 @@
+ 							pos[1] += y * scale
+ 						if z is not None:
+ 							pos[2] += z * scale
++					if (pos[2] > maxZ):
++						maxZ = pos[2]
+ 					if f is not None:
+ 						feedRateXY = f
+ 					if x is not None or y is not None or z is not None:
+@@ -205,6 +209,7 @@
+ 			self.progressCallback(100.0)
+ 		self.extrusionAmount = maxExtrusion
+ 		self.totalMoveTimeMinute = totalMoveTimeMinute
++		self.maxZ = maxZ
+ 
+ 	def _parseCuraProfileString(self, comment):
+ 		return {key: value for (key, value) in map(lambda x: x.split("=", 1), zlib.decompress(base64.b64decode(comment[len("CURA_PROFILE_STRING:"):])).split("\b"))}
+Index: octoprint-type-a/octoprint/gcodefiles.py
+===================================================================
+--- octoprint-type-a.orig/octoprint/gcodefiles.py	2013-12-22 19:01:48.412950381 +0000
++++ octoprint-type-a/octoprint/gcodefiles.py	2013-12-22 19:01:48.516466006 +0000
+@@ -60,6 +60,9 @@
+ 
+ 		analysisResult = {}
+ 		dirty = False
++		if gcode.maxZ:
++			analysisResult["maxZ"] = "%.2f" % gcode.maxZ
++			dirty = True
+ 		if gcode.totalMoveTimeMinute:
+ 			analysisResult["estimatedPrintTime"] = util.getFormattedTimeDelta(datetime.timedelta(minutes=gcode.totalMoveTimeMinute))
+ 			dirty = True

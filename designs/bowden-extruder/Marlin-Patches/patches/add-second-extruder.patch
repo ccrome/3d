@@ -1,0 +1,50 @@
+Index: My/Configuration.h
+===================================================================
+--- My.orig/Configuration.h
++++ My/Configuration.h
+@@ -23,7 +23,7 @@
+ // startup. Implementation of an idea by Prof Braino to inform user that any changes made to this
+ // build by the user have been successfully uploaded into firmware.
+ #define STRING_VERSION_CONFIG_H __DATE__ " " __TIME__ // build date and time
+-#define STRING_CONFIG_H_AUTHOR "(Caleb, Set up for Type A 2014)" // Who made the changes.
++#define STRING_CONFIG_H_AUTHOR "(Caleb, Set up for Type A 2014, dual extruder)," // Who made the changes.
+ 
+ // SERIAL_PORT selects which serial port should be used for communication with the host.
+ // This allows the connection of wireless adapters (for instance) to non-default port pins.
+@@ -94,7 +94,7 @@
+ // #define MACHINE_UUID "00000000-0000-0000-0000-000000000000"
+ 
+ // This defines the number of extruders
+-#define EXTRUDERS 1
++#define EXTRUDERS 2
+ 
+ //// The following define selects which power supply you have. Please choose the one that matches your setup
+ // 1 = ATX
+@@ -144,7 +144,7 @@
+ // 110 is Pt100 with 1k pullup (non standard)
+ 
+ #define TEMP_SENSOR_0 1
+-#define TEMP_SENSOR_1 0
++#define TEMP_SENSOR_1 1
+ #define TEMP_SENSOR_2 0
+ #define TEMP_SENSOR_BED 0
+ 
+@@ -499,9 +499,9 @@ const bool Z_MAX_ENDSTOP_INVERTING = tru
+ 
+ // default settings
+ 
+-#define DEFAULT_AXIS_STEPS_PER_UNIT   {40,160,1600,275}  // default steps per unit for 2014 Series 1 (2GT belt Beta1)
+-#define DEFAULT_MAX_FEEDRATE          {100, 100, 12.5, 160}    // (mm/sec)
+-#define DEFAULT_MAX_ACCELERATION      {1000, 1000,15,20000}    // X, Y, Z, E maximum start speed for accelerated moves. E default values are good for skeinforge 40+, for older versions raise them a lot.
++#define DEFAULT_AXIS_STEPS_PER_UNIT   {40,160,1600,137}  // default steps per unit for 2014 Series 1 (2GT belt Beta1)
++#define DEFAULT_MAX_FEEDRATE          {100, 100, 12.5, 160, 160}    // (mm/sec)
++#define DEFAULT_MAX_ACCELERATION      {1000, 1000,15,20000, 20000}    // X, Y, Z, E maximum start speed for accelerated moves. E default values are good for skeinforge 40+, for older versions raise them a lot.
+ 
+ #define DEFAULT_ACCELERATION          400    // X, Y, Z and E max acceleration in mm/s^2 for printing moves
+ #define DEFAULT_RETRACT_ACCELERATION  1600   // X, Y, Z and E max acceleration in mm/s^2 for retracts
+@@ -805,4 +805,4 @@ const bool Z_MAX_ENDSTOP_INVERTING = tru
+ #include "Configuration_adv.h"
+ #include "thermistortables.h"
+ 
+-#endif //__CONFIGURATION_H
++#endif //__CONFIGURATION_H

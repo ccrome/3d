@@ -1,0 +1,16 @@
+This is a set of patches to apply to the marlin source code. 
+
+To use: 
+
+# cd <Arduino Sketch Directory>
+# svn co https://github.com/ErikZalm/Marlin/trunk/Marlin
+# cd Marlin
+# svn co https://caleb-typea-settings.googlecode.com/svn/trunk/designs/bowden-extruder/Marlin-Patches/patches
+# quilt push -a
+
+Alternatively, you can look in the patches directory and apply each patch from the 'series' file manually.  It's easy since there isn't much to change.
+
+Then open up the arduino software, choose board = Mega, & port.  Then compile and upload.   For some reason, the Rumba only works on my macbooks rearward USB port .  Don't know why.
+
+Importantly, the current firmware version I have checked in here uses 1/8 stepping on the X axis -- you probably want to put it back to 160 steps per unit like the Y.
+

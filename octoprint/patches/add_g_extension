@@ -1,0 +1,13 @@
+Index: octoprint-type-a/octoprint/gcodefiles.py
+===================================================================
+--- octoprint-type-a.orig/octoprint/gcodefiles.py	2013-11-05 05:24:35.282577385 +0000
++++ octoprint-type-a/octoprint/gcodefiles.py	2013-12-22 18:53:06.088731569 +0000
+@@ -15,7 +15,7 @@
+ 
+ from werkzeug.utils import secure_filename
+ 
+-SUPPORTED_EXTENSIONS=["gcode", "gco"]
++SUPPORTED_EXTENSIONS=["gcode", "gco", "g"]
+ 
+ class GcodeManager:
+ 	def __init__(self):

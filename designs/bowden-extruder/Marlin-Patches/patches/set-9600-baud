@@ -1,0 +1,13 @@
+Index: Marlin/Configuration.h
+===================================================================
+--- Marlin.orig/Configuration.h
++++ Marlin/Configuration.h
+@@ -32,7 +32,7 @@
+ 
+ // This determines the communication speed of the printer
+ // This determines the communication speed of the printer
+-#define BAUDRATE 230400
++#define BAUDRATE 9600
+ 
+ // This enables the serial port associated to the Bluetooth interface
+ //#define BTENABLED              // Enable BT interface on AT90USB devices
