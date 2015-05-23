@@ -52,7 +52,7 @@ class DeepFocusMacro:
 df = DeepFocusMacro("COM4", "c:\\progs\\gphoto2", "photos", delay_after_moving=4)
 print "going to start scan."
 try:
-    df.scan(z_stepsize=.2, z_distance=5)
+    df.scan(z_stepsize=.1, z_distance=6)
 except Exception as e:
     print e
 df.quit()
