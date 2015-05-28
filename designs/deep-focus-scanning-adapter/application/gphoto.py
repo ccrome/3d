@@ -17,13 +17,20 @@ class Gphoto:
                     "CYGWIN"  : "nodosfilewarning",
         }
         
-    def take_photo(self, photo_identifier_string):
-        cmd = [self.gphoto, "--capture-image-and-download", "--force-overwrite"]
-        env = self.env
-        sub =  subprocess.Popen(cmd, env=env, shell=False)
-        sub.wait()
-        #Move the photo into the right place, with the right name
-        shutil.copy("capt0000.jpg", "%s/%s.jpg" % (self.photo_dir, photo_identifier_string))
+    def take_photo(self, photo_identifier_string, tries = 10):
+        while tries > 0:
+            cmd = [self.gphoto, "--capture-image-and-download", "--force-overwrite"]
+            env = self.env
+            sub =  subprocess.Popen(cmd, env=env, shell=False)
+            sub.wait()
+            err = sub.returncode
+            tries = tries - 1
+            if err:
+                print "RETRY PHOTO"
+            else:
+                #Move the photo into the right place, with the right name
+                shutil.copy("capt0000.nef", "%s/%s.nef" % (self.photo_dir, photo_identifier_string))
+                break
 
 if (__name__ == '__main__'):
     gp = Gphoto("c:\\progs\\gphoto2", ".")

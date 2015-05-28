@@ -5,7 +5,7 @@ import sys
 class PhotoStitcher:
     def __init__(self, hugin_dir):
         self.directory = hugin_dir
-    def align(self, file_list, output_prefix, threads=2, gpu=True):
+    def align(self, file_list, output_prefix, threads=2, gpu=False):
         cmd = [
             "%s/align_image_stack.exe" % self.directory,
             "-m",

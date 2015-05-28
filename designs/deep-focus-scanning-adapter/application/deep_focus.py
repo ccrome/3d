@@ -49,10 +49,10 @@ class DeepFocusMacro:
     def quit(self):
         self.rr.quit()
         
-df = DeepFocusMacro("COM4", "c:\\progs\\gphoto2", "photos", delay_after_moving=4)
+df = DeepFocusMacro("COM4", "c:\\progs\\gphoto2", "photos_fly_3", delay_after_moving=4)
 print "going to start scan."
 try:
-    df.scan(z_stepsize=.1, z_distance=6)
+    df.scan(z_stepsize=.2, z_distance=6)
 except Exception as e:
     print e
 df.quit()
